@@ -13,19 +13,6 @@ const url_b = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?f
 let games_a = [];
 let games_b = [];
 
-// http.get(url_a, res => {
-//     res.setEncoding("utf8");
-//     let body = "";
-//     res.on("data", data => {
-//         body += data;
-//     });
-//     res.on("end", () => {
-//         body = JSON.parse(body);
-//         games_a = body.response.games;
-//         // console.log(body);
-//     });
-// });
-
 // based on "https://www.tomas-dvorak.cz/posts/nodejs-request-without-dependencies/"
 const getContent = function(url, game_array) {
     return new Promise((resolve, reject) => {
@@ -43,24 +30,23 @@ const getContent = function(url, game_array) {
             response.on("end", () => {
                 body = JSON.parse(body);
                 game_array = body.response.games;
-                console.log(body);
+                // console.log(body);
+                resolve(body);
             });
         });
-        request.on("error", (err) => reject(err))
-    })
+        request.on("error", (err) => reject(err));
+    });
 };
 
 const promise_a = getContent(url_a, games_a)
-    .then((html) => console.log(html))
-    .catch((err) => console.error(err));
+    // .then((message) => console.log(message))
+    // .catch((err) => console.error(err));
 
 const promise_b = getContent(url_b, games_b)
-    .then((html) => console.log(html))
-    .catch((err) => console.log(err));
+    // .then((message) => console.log(message))
+    // .catch((err) => console.log(err));
 
-// not sure this is the correct syntax
 Promise.all([promise_a, promise_b])
-    .then(() => {
-        console.log(games_a);
-        console.log(games_b);
+    .then((values) => {
+        console.log(values);
     });
