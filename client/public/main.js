@@ -31,7 +31,7 @@ const getContent = function(url, game_array) {
                 body = JSON.parse(body);
                 game_array = body.response.games;
                 // console.log(body);
-                resolve(body);
+                resolve(game_array);
             });
         });
         request.on("error", (err) => reject(err));
@@ -48,5 +48,22 @@ const promise_b = getContent(url_b, games_b)
 
 Promise.all([promise_a, promise_b])
     .then((values) => {
-        console.log(values);
+        let dict = {};
+
+        // loop through each game library, add game as key and users as value
+        for(var i = 0; i < values.length; i++) {
+            values[i].forEach(element => {
+                if(dict[element.appid]) {
+                    dict[element.appid].push(i);
+                }
+                else {
+                    dict[element.appid] = [i];
+                }
+            });
+        }
+
+        // print out
+        for(var key in dict) {
+            console.log(key + ": " + dict[key]);
+        }
     });
